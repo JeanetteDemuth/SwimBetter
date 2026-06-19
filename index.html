@@ -100,7 +100,12 @@ function splits(){let p=sec(by('splitPace').value);by('splitOut').innerHTML=p?[5
 function cssCalc(){let a=sec(by('css400').value),b=sec(by('css200').value);by('cssOut').innerText=(!a||!b||a<=b)?'Indtast gyldige tider':'CSS: '+fmt((a-b)/2)+' pr. 100 m'}
 function swolfCalc(){let a=+by('swolfTime').value,b=+by('swolfStrokes').value;by('swolfOut').innerText=(!a||!b)?'Indtast tid og armtag':'SWOLF: '+(a+b)}
 function racePlan(){let d=+by('raceDist').value,t=sec(by('raceTime').value),l=+by('lap').value,st=by('strategy').value;if(!t){by('raceOut').innerText='Indtast måltid';return}let n=Math.ceil(d/l),base=t/(d/l),rows='',sum=0,raw=[];for(let i=0;i<n;i++){let f=st=='even'?1:st=='negative'?1.04-(i/(n-1||1))*0.08:1.06-(i/(n-1||1))*0.12;let dist=Math.min(l,d-i*l),x=base*(dist/l)*f;raw.push([dist,x]);sum+=x}let corr=t/sum,cum=0;raw.forEach((r,i)=>{let lt=r[1]*corr;cum+=lt;rows+='<tr><td>'+(i+1)+'</td><td>'+Math.min((i+1)*l,d)+' m</td><td>'+fmt(lt)+'</td><td>'+fmt(cum)+'</td><td>'+fmt(lt/(r[0]/100))+'</td></tr>'});let date=by('raceDate').value?(' · '+by('raceDate').value):'';by('raceOut').innerText=(by('raceName').value||'Race')+date+' · Måltempo: '+fmt(t/(d/100))+' pr. 100 m';by('raceTable').innerHTML='<table><tr><th>Lap</th><th>Distance</th><th>Lap-tid</th><th>Samlet</th><th>Tempo</th></tr>'+rows+'</table>'}
-function renderTech(){by('techLib').innerHTML=Object.entries(tech).map(([k,v])=>'<details class=category><summary>'+k+'</summary><div class=inner>'+v.map(x=>'<button class="small" onclick="showEx(\\''+x+'\\')">'+x+'</button>').join('')+'</div></details>').join('')}
+function renderTech(){
+  by('techLib').innerHTML = Object.entries(tech).map(([k,v]) => {
+    const buttons = v.map(x => `<button class="small" onclick="showEx('${x.replace(/'/g, "\\'")}')">${x}</button>`).join('');
+    return `<details class="category"><summary>${k}</summary><div class="inner">${buttons}</div></details>`;
+  }).join('');
+}
 function showEx(x){let d=desc[x]||['Teknikøvelse','Udføres roligt og kontrolleret.','Mærk forskellen i kroppen.','Forcer ikke bevægelsen.','4-6 x 25 m.'];by('modalText').innerHTML='<h2>'+x+'</h2><p><b>Formål:</b><br>'+d[0]+'</p><p><b>Sådan gør du:</b><br>'+d[1]+'</p><p><b>Det skal du mærke:</b><br>'+d[2]+'</p><p><b>Typiske fejl:</b><br>'+d[3]+'</p><p><b>Serie:</b><br>'+d[4]+'</p>';by('modal').style.display='block'}
 function closeModal(){by('modal').style.display='none'}
 function icePlan(){by('iceOut').innerHTML='<div class=note><b>'+by('iceDist').value+' · '+by('iceTemp').value+':</b> Høj frekvens, minimal glide, rolig vejrtrækning og sikker opvarmning efter svømning.</div>'}
